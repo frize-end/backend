@@ -22,7 +22,6 @@
 - 统一返回封装、全局异常捕获、请求参数校验
 ## 项目目录
 ```plaintext
-```markdown
 FastAPI_Pro/
 ├── app/                    # 业务主目录
 │   ├── main.py             # 项目启动入口

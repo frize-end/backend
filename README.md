@@ -20,9 +20,9 @@
 - 资产流转模块：资产申领、归还记录登记
 - 日志模块：关键操作简易记录
 - 统一返回封装、全局异常捕获、请求参数校验
-
 ## 项目目录
 ```plaintext
+```markdown
 FastAPI_Pro/
 ├── app/                    # 业务主目录
 │   ├── main.py             # 项目启动入口
@@ -35,7 +35,6 @@ FastAPI_Pro/
 ├── requirements-base.txt   # 运行核心依赖
 ├── requirements-dev.txt    # 开发工具依赖
 └── requirements-lock.txt   # 锁定依赖版本
-
 ```
 ## 本地运行
 1. 创建虚拟环境

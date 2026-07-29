@@ -1,4 +1,40 @@
+# 虚拟环境
 .venv/
-__pycache__/
+venv/
+env/
+
+# 环境变量密钥文件
 .env
+.env.local
+.env.dev
+.env.prod
+
+# Python 编译缓存
+__pycache__/
 *.pyc
+*.pyo
+*.pyd
+
+# 单元测试缓存
+.pytest_cache/
+
+# 日志
+logs/
+*.log
+
+# 打包构建临时文件
+build/
+dist/
+*.egg-info/
+
+# VS Code 工作区配置
+.vscode/
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# 编辑器临时文件
+*.swp
+*.swo
+*.tmp

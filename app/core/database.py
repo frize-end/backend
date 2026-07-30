@@ -1,5 +1,5 @@
 from sqlalchemy import create_engine
-from sqlalchemy.orm import Declarative_base, sessionmaker
+from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
 DB_URL = "mysql+pymysql://root:123456@localhost:3306/fastapi_demo?charset=utf8mb4"
 
@@ -18,7 +18,7 @@ SessionLocal = sessionmaker(
     bind = engine
 )
 # 创建数据库映射基类
-class Base(Declarative_base):
+class Base(DeclarativeBase):
      pass
 def get_db():
     db = SessionLocal()

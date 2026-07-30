@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-  # noqa: UP009
 from core.config import Settings
-from fastapi import FastAPI
+from core.database import get_db
+from fastapi import Depends, FastAPI
+from sqlalchemy import text
+from sqlalchemy.orm import Session
 
 #实例化应用
 app = FastAPI()
@@ -8,3 +11,12 @@ app = FastAPI()
 
 settings = Settings()
 print(settings.user, settings.user_host, settings.user_password)
+
+
+@app.get("/test_database")
+def test_database(db : Session = Depends(get_db)):  # noqa: B008
+    result = db.excute(text("SELECT 1"))
+    return {
+    "status": "数据库连接成功",
+    "test_result": result.scalar_one()
+}

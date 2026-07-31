@@ -1,7 +1,11 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
-DB_URL = "mysql+pymysql://root:123456@localhost:3306/fastapi_demo?charset=utf8mb4"
+from app.core.config import Settings
+
+settings = Settings()
+
+DB_URL = f"mysql+pymysql://{settings.user}@{settings.user_password}:{settings.db_port}/{settings.db_name}?charset=utf8mb4"
 
 # 创建数据库连接引擎
 engine = create_engine(

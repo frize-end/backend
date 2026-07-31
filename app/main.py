@@ -12,8 +12,7 @@ app = FastAPI()
 
 settings = Settings()
 print(settings.user, settings.user_host, settings.user_password)
-
-
+#测试数据库连接
 @app.get("/test_database")
 def test_database(db : Session = Depends(get_db)):  # noqa: B008
     result = db.execute(text("SELECT 1"))

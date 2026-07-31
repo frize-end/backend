@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 from app.core.config import Settings
 from app.core.database import get_db
 from app.models.user import User
+from app.schemas import UserUpdateDTO
 
 #实例化应用
 app = FastAPI()
@@ -47,8 +48,9 @@ def get_user(id: int , db : Session = Depends(get_db)):  # noqa: B008
     }
 
 #更改用户信息
-@app.patch("/user/{id}")
+@app.patch("/user/{user_id}")
 def update_user(user_id:int,update_data: UserUpdateDTO,db: Session = Depends(get_db)):  # noqa: B008
+    user = db.query(User).filter(User.id == user_id).first()
     #检测用户是否存在
     if not user :
         raise ValueError("用户不存在")

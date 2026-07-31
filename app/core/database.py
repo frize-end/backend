@@ -5,7 +5,7 @@ from app.core.config import Settings
 
 settings = Settings()
 
-DB_URL = f"mysql+pymysql://{settings.user}@{settings.user_password}:{settings.db_port}/{settings.db_name}?charset=utf8mb4"
+DB_URL = f"mysql+pymysql://{settings.user}:{settings.user_password}@{settings.user_host}:{settings.db_port}/{settings.db_name}?charset=utf8mb4"
 
 # 创建数据库连接引擎
 engine = create_engine(

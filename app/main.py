@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.core.config import Settings
 from app.core.database import get_db
+from app.models.user import User
 
 #实例化应用
 app = FastAPI()
@@ -20,3 +21,16 @@ def test_database(db : Session = Depends(get_db)):  # noqa: B008
     "status": "数据库连接成功",
     "test_result": result.scalar_one()
 }
+
+#新增用户
+@app.post("/add_user")
+def add_user(username: str, password: str, db : Session = Depends(get_db)):  # noqa: B008
+    user = User(username=username, password=password)
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    return {
+        "id":user.id,
+        "username":user.username,
+        "create_time":user.create_time
+    }

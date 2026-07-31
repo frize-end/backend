@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-  # noqa: UP009
-from core.config import Settings
-from core.database import get_db
 from fastapi import Depends, FastAPI
 from sqlalchemy import text
 from sqlalchemy.orm import Session
+
+from app.core.config import Settings
+from app.core.database import get_db
 
 #实例化应用
 app = FastAPI()

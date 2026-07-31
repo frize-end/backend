@@ -1,5 +1,5 @@
 from app.core.database import Base, engine
-from app.models.user import User
+from app.models.user import User  # noqa: F401
 
 
 def create_tables():

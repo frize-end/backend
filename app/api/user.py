@@ -5,22 +5,28 @@ from app.core.database import get_db
 from app.core.exceptions import BussinessException
 from app.core.result import Result
 from app.models.user import User
-from app.schemas.user import UserUpdateDTO
+from app.schemas.user import UserCreateDTO, UserUpdateDTO
 
 router = APIRouter(prefix="/user", tags=["用户管理"])
 
 #新增用户
 @router.post("")
-def add_user(username: str, password: str, db : Session = Depends(get_db)):  # noqa: B008
-    user = db.query(User).filter(User.username == username, User.is_delete == 0).first()
+def add_user(userdata: UserCreateDTO, password: str, db : Session = Depends(get_db)):  # noqa: B008
+    user = db.query(User).filter(User.username == userdata.username, User.is_delete == 0).first()
     #检测用户是否存在
     if user:
         raise BussinessException(code=409, message="用户已存在")
-    user = User(username=username, password=password)
-    db.add(user)
+
+    #创建新用户
+    new_user = User(
+        username=userdata.username,
+        password=userdata.password,
+        is_delete=0
+    )
+    db.add(new_user)
     db.commit()
-    db.refresh(user)
-    return Result.success(data={user})
+    db.refresh(new_user)
+    return Result.success(data={new_user})
 #查询用户
 @router.get("{id}")
 def get_user(id: int , db : Session = Depends(get_db)):  # noqa: B008

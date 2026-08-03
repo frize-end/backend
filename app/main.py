@@ -38,8 +38,8 @@ def add_user(username: str, password: str, db : Session = Depends(get_db)):  # n
 #查询用户
 @app.get("/get_user/{id}")
 def get_user(id: int , db : Session = Depends(get_db)):  # noqa: B008
-    user = db.quary(User).filter(User.id == id).first()
-    if not User:
+    user = db.query(User).filter(User.id == id, User.is_delete == 0).first()
+    if not user:
         raise ValueError("用户不存在")
     return {
         "id":user.id,
@@ -50,7 +50,7 @@ def get_user(id: int , db : Session = Depends(get_db)):  # noqa: B008
 #更改用户信息
 @app.patch("/user/{user_id}")
 def update_user(user_id:int,update_data: UserUpdateDTO,db: Session = Depends(get_db)):  # noqa: B008
-    user = db.query(User).filter(User.id == user_id).first()
+    user = db.query(User).filter(User.id == user_id, User.is_delete == 0).first()
     #检测用户是否存在
     if not user :
         raise ValueError("用户不存在")
@@ -62,3 +62,17 @@ def update_user(user_id:int,update_data: UserUpdateDTO,db: Session = Depends(get
     db.commit()
     db.refresh(user)
     return user
+
+#删除用户
+@app.delete("/user/{user_id}")
+def delete_user(user_id:int,db: Session = Depends(get_db)):  # noqa: B008
+    #检测用户是否存在
+    user = db.query(User).filter(User.id == user_id, User.is_delete == 0).first()
+    if not user :
+        raise ValueError("用户不存在")
+    #逻辑删除
+    user.is_delete = True
+    db.commit()
+    return {
+    "message": "删除成功"
+    }

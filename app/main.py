@@ -24,7 +24,7 @@ def test_database(db : Session = Depends(get_db)):  # noqa: B008
 }
 
 #新增用户
-@app.post("/add_user")
+@app.post("/user")
 def add_user(username: str, password: str, db : Session = Depends(get_db)):  # noqa: B008
     user = User(username=username, password=password)
     db.add(user)
@@ -36,7 +36,7 @@ def add_user(username: str, password: str, db : Session = Depends(get_db)):  # n
         "create_time":user.create_time
     }
 #查询用户
-@app.get("/get_user/{id}")
+@app.get("/user/{id}")
 def get_user(id: int , db : Session = Depends(get_db)):  # noqa: B008
     user = db.query(User).filter(User.id == id, User.is_delete == 0).first()
     if not user:

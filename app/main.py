@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from app.core.config import Settings
 from app.core.database import get_db
 from app.models.user import User
-from app.schemas import UserUpdateDTO
+from app.schemas.user import UserUpdateDTO
 
 #实例化应用
 app = FastAPI()
@@ -55,9 +55,9 @@ def update_user(user_id:int,update_data: UserUpdateDTO,db: Session = Depends(get
     if not user :
         raise ValueError("用户不存在")
 
-    date_dict = update_data.model_dump(exclude_unset=True)
+    data_dict = update_data.model_dump(exclude_unset=True)
 
-    for key,value in date_dict.items():
+    for key,value in data_dict.items():
         setattr(user,key,value)
     db.commit()
     db.refresh(user)

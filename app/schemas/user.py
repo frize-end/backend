@@ -9,7 +9,7 @@ class UserBase(BaseModel):
 class UserCreateDTO(UserBase):
     password :str = Field(..., min_length=6, description="密码")
 
-class UserUpdateDTO(UserBase):
+class UserUpdateDTO(BaseModel):
     username :str | None = Field(None,description="用户名")
     password :str | None = Field(None, min_length=6, description="密码，可选")
 

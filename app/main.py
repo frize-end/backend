@@ -6,7 +6,6 @@ from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from app.api.user import router as user_router
-from app.core.config import Settings
 from app.core.database import get_db
 from app.core.exceptions import BusinessException
 
@@ -45,8 +44,6 @@ async def global_exception_handler(request: Request, exc: Exception):
             "data": None
         }
     )
-settings = Settings()
-print(settings.user, settings.user_host, settings.user_password)
 #测试数据库连接
 @app.get("/test_database")
 def test_database(db : Session = Depends(get_db)):  # noqa: B008

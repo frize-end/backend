@@ -11,29 +11,29 @@ router = APIRouter(prefix="/user", tags=["用户管理"])
 
 #新增用户
 @router.post("", response_model=UserResponseDTO)
-def add_user(userdata: UserCreateDTO, db : Session = Depends(get_db)):  # noqa: B008
-    user = db.query(User).filter(User.username == userdata.username, User.is_delete == 0).first()
+def add_user(user_data: UserCreateDTO, db : Session = Depends(get_db)):  # noqa: B008
+    user = db.query(User).filter(User.username == user_data.username, User.is_delete == 0).first()
     #检测用户是否存在
     if user:
         raise BusinessException(code=409, message="用户已存在")
 
     #创建新用户
     new_user = User(
-        username=userdata.username,
-        password=userdata.password,
+        username=user_data.username,
+        password=user_data.password,
         is_delete=0
     )
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
-    return Result.success(data=new_user)
+    return Result.success(data=UserResponseDTO.model_validate(user))
 #查询用户
 @router.get("/{user_id}", response_model=UserResponseDTO)
 def get_user(user_id: int, db : Session = Depends(get_db)):  # noqa: B008
     user = db.query(User).filter(User.id == user_id, User.is_delete == 0).first()
     if not user:
         raise BusinessException(code=404, message="用户不存在")
-    return Result.success(data=user)
+    return Result.success(data=UserResponseDTO.model_validate(user))
 
 #更改用户信息
 @router.patch("/{user_id}", response_model=UserResponseDTO)
@@ -49,7 +49,7 @@ def update_user(user_id:int,update_data: UserUpdateDTO,db: Session = Depends(get
         setattr(user,key,value)
     db.commit()
     db.refresh(user)
-    return Result.success(data=user)
+    return Result.success(data=UserResponseDTO.model_validate(user))
 
 #删除用户
 @router.delete("/{user_id}")
@@ -72,8 +72,8 @@ def restore_user(user_id:int,db: Session = Depends(get_db)):  # noqa: B008
         raise BusinessException(code=404, message="用户不存在")
     #检测用户是否已删除
     if user.is_delete == 0:
-        raise BusinessException(code=409, message="用户已存在，无需恢复")
+        raise BusinessException(code=409, message="用户未被删除，无需恢复")
     #恢复用户
     user.is_delete = 0
     db.commit()
-    return Result.success(message="恢复成功")
+    return Result.success(data=UserResponseDTO.model_validate(user))

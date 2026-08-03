@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
+from app.core.exceptions import BussinessException
 from app.core.result import Result
 from app.models.user import User
 from app.schemas.user import UserUpdateDTO
@@ -14,7 +15,7 @@ def add_user(username: str, password: str, db : Session = Depends(get_db)):  # n
     user = db.query(User).filter(User.username == username, User.is_delete == 0).first()
     #检测用户是否存在
     if user:
-        return Result.error(message="用户已存在")
+        raise BussinessException(code=409, message="用户已存在")
     user = User(username=username, password=password)
     db.add(user)
     db.commit()
@@ -25,7 +26,7 @@ def add_user(username: str, password: str, db : Session = Depends(get_db)):  # n
 def get_user(id: int , db : Session = Depends(get_db)):  # noqa: B008
     user = db.query(User).filter(User.id == id, User.is_delete == 0).first()
     if not user:
-        return Result.error(message="用户不存在")
+        raise BussinessException(code=404, message="用户不存在")
     return Result.success(data={user})
 
 #更改用户信息
@@ -34,7 +35,7 @@ def update_user(user_id:int,update_data: UserUpdateDTO,db: Session = Depends(get
     user = db.query(User).filter(User.id == user_id, User.is_delete == 0).first()
     #检测用户是否存在
     if not user :
-        return Result.error(message="用户不存在")
+        raise BussinessException(code=404, message="用户不存在")
 
     data_dict = update_data.model_dump(exclude_unset=True)
 
@@ -50,7 +51,7 @@ def delete_user(user_id:int,db: Session = Depends(get_db)):  # noqa: B008
     #检测用户是否存在
     user = db.query(User).filter(User.id == user_id, User.is_delete == 0).first()
     if not user :
-        return Result.error(message="用户不存在")
+        raise BussinessException(code=404, message="用户不存在")
     #逻辑删除
     user.is_delete = True
     db.commit()
@@ -62,10 +63,10 @@ def restore_user(user_id:int,db: Session = Depends(get_db)):  # noqa: B008
     #检测用户是否存在
     user = db.query(User).filter(User.id == user_id).first()
     if not user :
-        return Result.error(message="用户不存在")
+        raise BussinessException(code=404, message="用户不存在")
     #检测用户是否已删除
     if user.is_delete == 0:
-        return Result.error(message="用户已存在，无需恢复")
+        raise BussinessException(code=409, message="用户已存在，无需恢复")
     #恢复用户
     user.is_delete = 0
     db.commit()

@@ -26,7 +26,7 @@ def add_user(user_data: UserCreateDTO, db : Session = Depends(get_db)):  # noqa:
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
-    return Result.success(data=UserResponseDTO.model_validate(user))
+    return Result.success(data=UserResponseDTO.model_validate(new_user))
 #查询用户
 @router.get("/{user_id}", response_model=UserResponseDTO)
 def get_user(user_id: int, db : Session = Depends(get_db)):  # noqa: B008

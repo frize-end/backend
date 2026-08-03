@@ -76,3 +76,20 @@ def delete_user(user_id:int,db: Session = Depends(get_db)):  # noqa: B008
     return {
     "message": "删除成功"
     }
+
+#恢复删除的用户
+@app.put("/user/{user_id}/restore")
+def restore_user(user_id:int,db: Session = Depends(get_db)):  # noqa: B008
+    #检测用户是否存在
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user :
+        raise ValueError("用户不存在")
+    #检测用户是否已删除
+    if user.is_delete == 0:
+        raise ValueError("用户已存在，无需恢复")
+    #恢复用户
+    user.is_delete = 0
+    db.commit()
+    return {
+        "message": "恢复成功"
+    }

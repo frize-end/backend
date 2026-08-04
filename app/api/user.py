@@ -10,7 +10,7 @@ from app.schemas.user import UserCreateDTO, UserResponseDTO, UserUpdateDTO
 router = APIRouter(prefix="/user", tags=["用户管理"])
 
 #新增用户
-@router.post("", response_model=UserResponseDTO)
+@router.post("", response_model=Result[UserResponseDTO])
 def add_user(user_data: UserCreateDTO, db : Session = Depends(get_db)):  # noqa: B008
     user = db.query(User).filter(User.username == user_data.username, User.is_delete == 0).first()
     #检测用户是否存在
@@ -28,7 +28,7 @@ def add_user(user_data: UserCreateDTO, db : Session = Depends(get_db)):  # noqa:
     db.refresh(new_user)
     return Result.success(data=UserResponseDTO.model_validate(new_user))
 #查询用户
-@router.get("/{user_id}", response_model=UserResponseDTO)
+@router.get("/{user_id}", response_model=Result[UserResponseDTO])
 def get_user(user_id: int, db : Session = Depends(get_db)):  # noqa: B008
     user = db.query(User).filter(User.id == user_id, User.is_delete == 0).first()
     if not user:
@@ -36,7 +36,7 @@ def get_user(user_id: int, db : Session = Depends(get_db)):  # noqa: B008
     return Result.success(data=UserResponseDTO.model_validate(user))
 
 #更改用户信息
-@router.patch("/{user_id}", response_model=UserResponseDTO)
+@router.patch("/{user_id}", response_model=Result[UserResponseDTO])
 def update_user(user_id:int,update_data: UserUpdateDTO,db: Session = Depends(get_db)):  # noqa: B008
     user = db.query(User).filter(User.id == user_id, User.is_delete == 0).first()
     #检测用户是否存在
@@ -52,7 +52,7 @@ def update_user(user_id:int,update_data: UserUpdateDTO,db: Session = Depends(get
     return Result.success(data=UserResponseDTO.model_validate(user))
 
 #删除用户
-@router.delete("/{user_id}")
+@router.delete("/{user_id}", response_model=Result[None])
 def delete_user(user_id:int,db: Session = Depends(get_db)):  # noqa: B008
     #检测用户是否存在
     user = db.query(User).filter(User.id == user_id, User.is_delete == 0).first()
@@ -64,7 +64,7 @@ def delete_user(user_id:int,db: Session = Depends(get_db)):  # noqa: B008
     return Result.success(message="删除成功")
 
 #恢复删除的用户
-@router.put("/{user_id}/restore", response_model=UserResponseDTO)
+@router.put("/{user_id}/restore", response_model=Result[UserResponseDTO])
 def restore_user(user_id:int,db: Session = Depends(get_db)):  # noqa: B008
     #检测用户是否存在
     user = db.query(User).filter(User.id == user_id).first()

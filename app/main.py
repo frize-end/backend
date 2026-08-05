@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-  # noqa: UP009
 import logging
+import os
 import traceback
+from logging.handlers import RotatingFileHandler
 
 from fastapi import Depends, FastAPI, Request
 from fastapi.exceptions import RequestValidationError
@@ -87,3 +89,38 @@ def test_database(db : Session = Depends(get_db)):  # noqa: B008
 
 #挂载用户模块路由
 app.include_router(user_router)
+
+log_dir = "logs"
+if not os.path.exists(log_dir):
+    os.mkdir(log_dir)
+
+# 定义日志格式：时间 | 级别 | 文件名:行号 | 日志内容
+log_formatter = logging.Formatter(
+    "%(asctime)s | %(levelname)s | %(filename)s:%(lineno)d | %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S"
+)
+
+#配置两个Handler
+
+# 控制台Handler
+console_handler = logging.StreamHandler()
+console_handler.setFormatter(log_formatter)
+console_handler.setLevel(logging.INFO)
+
+# 文件Handler
+file_handler = RotatingFileHandler(
+    filename=os.path.join(log_dir, "app.log"),
+    maxBytes=1024 *1024 *1024 *10, # 10GB
+    backupcount=5,
+    encoding="utf-8" 
+)
+file_handler.setFormatter(log_formatter)
+file_handler.setLevel(logging.INFO)
+
+Logger = logging.getLogger()
+Logger.setLevel(logging.INFO)
+
+Logger.addHandler(console_handler)
+Logger.addHandler(file_handler)
+
+Logger.propagate = False  # 防止日志重复打印

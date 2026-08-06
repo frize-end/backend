@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-  # noqa: UP009
 import logging
 import os
+import time
 import traceback
 from logging.handlers import RotatingFileHandler
 
@@ -67,9 +68,9 @@ async def global_exception_handler(request: Request, exc: Exception):
     1. 后端打完整错误日志，方便排查bug
     2. 前端只返回通用提示，不暴露代码细节和敏感信息
     """
-    # 打完整错误堆栈，这是排查线上bug的关键，绝对不能少
-    logger.error(f"系统未知异常，请求地址：{request.url}，错误堆栈：\n{traceback.format_exc()}")
-
+    # 打完整错误堆栈，排查线上bug的关键
+    logger.error("系统内部错误，请稍后再试")
+    traceback.print_exc()  # 打印完整的错误堆栈
     return JSONResponse(
         status_code=200,
         content=Result.error(
@@ -77,6 +78,21 @@ async def global_exception_handler(request: Request, exc: Exception):
             message="系统内部错误，请联系管理员"
         ).model_dump()
     )
+
+@app.middleware("http")
+async def log_request_middleware(request:Request, call_next):
+    #请求开始：记录开始时间
+    start_time = time.time()
+    #把请求传给路由，拿到响应
+    response = await call_next(request)
+    #响应出去，计算耗时
+    process_time = time.time() - start_time
+    # 打访问日志：方法、路径、状态码、耗时（保留2位小数，单位秒）
+    logger.info(f"{request.method} {request.url.path} | 状态码：{response.status_code} | 耗时：{process_time:.2f}s")
+
+    # 可以把耗时放到响应头里，前端也能看到
+    response.headers["X-Process_Time"] = str(process_time)
+    return response
 
 #测试数据库连接
 @app.get("/test_database")

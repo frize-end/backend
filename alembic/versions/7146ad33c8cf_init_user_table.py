@@ -36,6 +36,7 @@ def downgrade() -> None:
     sa.Column('password', mysql.VARCHAR(length=128), nullable=False, comment='密码'),
     sa.Column('create_time', mysql.DATETIME(), nullable=True, comment='创建时间'),
     sa.Column('is_delete', mysql.SMALLINT(), autoincrement=False, nullable=True, comment='是否删除'),
+    sa.Column('is_superuser', mysql.SMALLINT(), autoincrement=False, nullable=True, comment='是否是超级用户'),
     sa.PrimaryKeyConstraint('id'),
     mysql_collate='utf8mb4_0900_ai_ci',
     mysql_default_charset='utf8mb4',

@@ -21,6 +21,7 @@ def add_user(user_data: UserCreateDTO, db : Session = Depends(get_db)):  # noqa:
     new_user = User(
         username=user_data.username,
         password=user_data.password,
+        phone=user_data.phone,
         is_delete=0
     )
     db.add(new_user)

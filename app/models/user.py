@@ -12,4 +12,4 @@ class User(Base):
     password = Column(String(128),nullable=False, comment="密码")
     create_time = Column(DateTime,default=datetime.now,comment="创建时间")
     is_delete = Column(SmallInteger,default=0,comment="是否删除")
-    is_superuser = Column(SmallInteger,default=0,comment="是否是超级用户")
+    phone = Column(String(11),nullable=False,comment="手机号")

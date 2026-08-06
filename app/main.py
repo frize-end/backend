@@ -78,7 +78,6 @@ async def global_exception_handler(request: Request, exc: Exception):
             message="系统内部错误，请联系管理员"
         ).model_dump()
     )
-
 @app.middleware("http")
 async def log_request_middleware(request:Request, call_next):
     #请求开始：记录开始时间

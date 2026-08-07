@@ -7,7 +7,7 @@ from app.core import (
     create_access_token,
     get_db,
     hash_password,
-    veritfy_password,
+    verify_password,
 )
 from app.models.user import User
 from app.schemas.user import UserCreateDTO, UserLoginDTO, UserResponseDTO, UserUpdateDTO
@@ -89,7 +89,7 @@ def restore_user(user_id:int,db: Session = Depends(get_db)):  # noqa: B008
 @router.post("/login", summary="用户登录", response_model=Result[dict])
 def login(login_data: UserLoginDTO, db: Session = Depends(get_db)):  # noqa: B008
     user = db.query(User).filter(User.username == login_data.username, User.is_delete == 0).first()
-    if not user or not veritfy_password(login_data.password, user.password):
+    if not user or not verify_password(login_data.password, user.password):
         raise BusinessException(code=401,message="用户名或密码错误")
 
     access_token = create_access_token(data={"sub": str(user.id)})

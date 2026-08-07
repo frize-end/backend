@@ -6,7 +6,7 @@ from app.core.database import Base
 
 
 class User(Base):
-    __tablename__ = "user"
+    __tablename__ = "users"
     id = Column(Integer, primary_key=True, comment="用户id")
     username = Column(String(32),nullable=False,index=True, comment="用户名")
     password = Column(String(128),nullable=False, comment="密码")

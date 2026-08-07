@@ -1,15 +1,20 @@
 from datetime import datetime, timedelta, timezone
 
+from fastapi import Depends
+from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from passlib.context import CryptContext
+from sqlalchemy.orm import Session
 
 from app.core.config import Settings
+from app.core.database import get_db
 from app.core.exceptions import BusinessException
+from app.models.user import User
 
 settings = Settings()
 
 pwd_context = CryptContext(
-    schemas=["bcrypt"],
+    schemes=["bcrypt"],
     deprecated="auto"
 )
 
@@ -66,3 +71,18 @@ def verify_token(token: str) -> dict:
     except JWTError:
         # 任何验证失败（过期、篡改、伪造）都抛401异常，和全局异常对接
         raise BusinessException(code=401, message="无效的登录凭证，请重新登录")
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/user/login")
+
+def get_current_user(
+        token: str = Depends(oauth2_scheme),
+        db: Session = Depends(get_db)  # noqa: B008
+)  -> User:
+    payload = verify_token(token)
+    user_id = payload.get("sub")
+    if user_id is None:
+        raise BusinessException(code=401, message="无效的登录凭证，请重新登录")
+    user = db.query(User).filter(User.id == user_id, User.is_delete == 0).first()
+    if not user:
+        raise  BusinessException(code=401, message="用户不存在或已被删除")
+    return user

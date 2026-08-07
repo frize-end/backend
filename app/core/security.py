@@ -3,9 +3,10 @@ from datetime import datetime, timedelta, timezone
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 
+from app.core.config import Settings
 from app.core.exceptions import BusinessException
 
-from . import settings
+settings = Settings()
 
 pwd_context = CryptContext(
     schemas=["bcrypt"],

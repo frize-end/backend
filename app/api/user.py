@@ -1,9 +1,16 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from app.core import BusinessException, Result, get_db, hash_password, veritfy_password
+from app.core import (
+    BusinessException,
+    Result,
+    create_access_token,
+    get_db,
+    hash_password,
+    veritfy_password,
+)
 from app.models.user import User
-from app.schemas.user import UserCreateDTO, UserResponseDTO, UserUpdateDTO
+from app.schemas.user import UserCreateDTO, UserLoginDTO, UserResponseDTO, UserUpdateDTO
 
 router = APIRouter(prefix="/user", tags=["用户管理"])
 
@@ -77,3 +84,16 @@ def restore_user(user_id:int,db: Session = Depends(get_db)):  # noqa: B008
     user.is_delete = 0
     db.commit()
     return Result.success(data=UserResponseDTO.model_validate(user))
+
+#用户登录
+@router.post("/login", summary="用户登录", response_model=Result[dict])
+def login(login_data: UserLoginDTO, db: Session = Depends(get_db)):  # noqa: B008
+    user = db.query(User).filter(User.username == login_data.username, User.is_delete == 0).first()
+    if not user or not veritfy_password(login_data.password, user.password):
+        raise BusinessException(code=401,message="用户名或密码错误")
+
+    access_token = create_access_token(data={"sub": str(user.id)})
+
+    return Result.success(
+        data={"access_token": access_token,
+              "token_type": "bearer"})

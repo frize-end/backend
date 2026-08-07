@@ -1,9 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from app.core.database import get_db
-from app.core.exceptions import BusinessException
-from app.core.result import Result
+from app.core import BusinessException, Result, get_db, hash_password, veritfy_password
 from app.models.user import User
 from app.schemas.user import UserCreateDTO, UserResponseDTO, UserUpdateDTO
 
@@ -13,6 +11,7 @@ router = APIRouter(prefix="/user", tags=["用户管理"])
 @router.post("", response_model=Result[UserResponseDTO])
 def add_user(user_data: UserCreateDTO, db : Session = Depends(get_db)):  # noqa: B008
     user = db.query(User).filter(User.username == user_data.username, User.is_delete == 0).first()
+    hashed_pwd = hash_password(user_data.password)
     #检测用户是否存在
     if user:
         raise BusinessException(code=409, message="用户已存在")
@@ -20,7 +19,7 @@ def add_user(user_data: UserCreateDTO, db : Session = Depends(get_db)):  # noqa:
     #创建新用户
     new_user = User(
         username=user_data.username,
-        password=user_data.password,
+        password=hashed_pwd,
         phone=user_data.phone,
         is_delete=0
     )

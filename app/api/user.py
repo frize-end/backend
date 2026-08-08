@@ -101,3 +101,11 @@ def login(login_data: UserLoginDTO, db: Session = Depends(get_db)):  # noqa: B00
     return Result.success(
         data={"access_token": access_token,
               "token_type": "bearer"})
+
+@router.post("",response_model=Result[UserResponseDTO])
+def add_user(
+    user_data: UserCreateDTO,
+    db: Session = Depends(get_db),
+    admin_user: User = Depends(get_current_admin)
+):
+    

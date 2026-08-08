@@ -86,3 +86,10 @@ def get_current_user(
     if not user:
         raise  BusinessException(code=401, message="用户不存在或已被删除")
     return user
+
+def get_current_admin(
+        current_user: User = Depends(get_current_user)  # noqa: B008
+) -> User:
+    if not current_user.role != "admin":
+        raise BusinessException(code=401,messsage="非管理员用户，无权限")
+    return current_user

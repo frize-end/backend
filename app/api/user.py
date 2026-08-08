@@ -15,6 +15,9 @@ from app.schemas.user import UserCreateDTO, UserLoginDTO, UserResponseDTO, UserU
 
 router = APIRouter(prefix="/user", tags=["用户管理"])
 
+#============================================
+#管理员接口
+#============================================
 #新增用户
 @router.post("", response_model=Result[UserResponseDTO])
 def add_user(user_data: UserCreateDTO, db : Session = Depends(get_db),admin : User = Depends(get_current_user)):  # noqa: B008

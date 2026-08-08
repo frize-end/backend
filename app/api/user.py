@@ -17,7 +17,7 @@ router = APIRouter(prefix="/user", tags=["用户管理"])
 
 #新增用户
 @router.post("", response_model=Result[UserResponseDTO])
-def add_user(user_data: UserCreateDTO, db : Session = Depends(get_db),current_user:User = Depends(get_current_user)):  # noqa: B008
+def add_user(user_data: UserCreateDTO, db : Session = Depends(get_db),admin : User = Depends(get_current_user)):  # noqa: B008
     user = db.query(User).filter(User.username == user_data.username, User.is_delete == 0).first()
     hashed_pwd = hash_password(user_data.password)
     #检测用户是否存在
@@ -37,7 +37,7 @@ def add_user(user_data: UserCreateDTO, db : Session = Depends(get_db),current_us
     return Result.success(data=UserResponseDTO.model_validate(new_user))
 #查询用户
 @router.get("/{user_id}", response_model=Result[UserResponseDTO])
-def get_user(user_id: int, db : Session = Depends(get_db),current_user:User = Depends(get_current_user)):  # noqa: B008
+def get_user(user_id: int, db : Session = Depends(get_db),admin : User = Depends(get_current_user)):  # noqa: B008
     user = db.query(User).filter(User.id == user_id, User.is_delete == 0).first()
     if not user:
         raise BusinessException(code=404, message="用户不存在")
@@ -45,7 +45,7 @@ def get_user(user_id: int, db : Session = Depends(get_db),current_user:User = De
 
 #更改用户信息
 @router.patch("/{user_id}", response_model=Result[UserResponseDTO])
-def update_user(user_id:int,update_data: UserUpdateDTO,db: Session = Depends(get_db),current_user:User = Depends(get_current_user)):  # noqa: B008
+def update_user(user_id:int,update_data: UserUpdateDTO,db: Session = Depends(get_db),admin : User = Depends(get_current_user)):  # noqa: B008
     user = db.query(User).filter(User.id == user_id, User.is_delete == 0).first()
     #检测用户是否存在
     if not user :
@@ -64,7 +64,7 @@ def update_user(user_id:int,update_data: UserUpdateDTO,db: Session = Depends(get
 
 #删除用户
 @router.delete("/{user_id}", response_model=Result[None])
-def delete_user(user_id:int,db: Session = Depends(get_db),current_user:User = Depends(get_current_user)):  # noqa: B008
+def delete_user(user_id:int,db: Session = Depends(get_db),admin : User = Depends(get_current_user)):  # noqa: B008
     #检测用户是否存在
     user = db.query(User).filter(User.id == user_id, User.is_delete == 0).first()
     if not user :
@@ -76,7 +76,7 @@ def delete_user(user_id:int,db: Session = Depends(get_db),current_user:User = De
 
 #恢复删除的用户
 @router.put("/{user_id}/restore", response_model=Result[UserResponseDTO])
-def restore_user(user_id:int,db: Session = Depends(get_db),current_user:User = Depends(get_current_user)):  # noqa: B008
+def restore_user(user_id:int,db: Session = Depends(get_db),admin : User = Depends(get_current_user)):  # noqa: B008
     #检测用户是否存在
     user = db.query(User).filter(User.id == user_id).first()
     if not user :
@@ -101,11 +101,4 @@ def login(login_data: UserLoginDTO, db: Session = Depends(get_db)):  # noqa: B00
     return Result.success(
         data={"access_token": access_token,
               "token_type": "bearer"})
-
-@router.post("",response_model=Result[UserResponseDTO])
-def add_user(
-    user_data: UserCreateDTO,
-    db: Session = Depends(get_db),
-    admin_user: User = Depends(get_current_admin)
-):
     

@@ -104,4 +104,13 @@ def login(login_data: UserLoginDTO, db: Session = Depends(get_db)):  # noqa: B00
     return Result.success(
         data={"access_token": access_token,
               "token_type": "bearer"})
-    
+#=============================================
+# 用户接口
+#=============================================
+
+
+@router.get("/me",response_model=Result[UserResponseDTO])
+def get_my_info(
+    current_user: User = Depends(get_current_user)  # noqa: B008
+):
+    return Result.success(data=UserResponseDTO.model_validate(current_user))

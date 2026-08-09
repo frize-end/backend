@@ -24,3 +24,13 @@ class ResponseModel(BaseModel, Generic[T]):
     def fail(cls,code:int,message:str)  -> "ResponseModel[T]":
           """失败响应，data固定为None"""
           return cls(code=code,message=message,data=None)
+
+class PageQuery(BaseModel):
+    page: int = 1
+    page_size: int = 20
+
+class PageResult(Generic[T]):
+    total: int
+    items: list[T]
+    page: int
+    page_size: int

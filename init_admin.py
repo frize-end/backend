@@ -2,6 +2,7 @@ from app.core.database import SessionLocal
 from app.core.security import hash_password
 from app.models.user import User
 
+
 def create_admin():
     db = SessionLocal()
     try:
@@ -18,3 +19,10 @@ def create_admin():
                       is_delete=0
                       )
         db.add(admin)
+        db.commit()
+        print("管理员创建成功：admin / admin123")
+    finally:
+        db.close()
+
+if __name__ == "__main__":
+    create_admin()

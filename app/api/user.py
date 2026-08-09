@@ -119,7 +119,7 @@ def get_my_info(
 def update_my_info(update_data: UserUpdateDTO, db: Session = Depends(get_db),current_user: User = Depends(get_current_user)):  # noqa: B008
     data_dict = update_data.model_dump(exclude_unset=True)
 
-    if "role" not in data_dict:
+    if "role" in data_dict:
         raise BusinessException(code=403, message="无权修改自己的角色")
     if "password" in data_dict:
         data_dict["password"] = hash_password(data_dict["password"])

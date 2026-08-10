@@ -8,7 +8,6 @@ from sqlalchemy.orm import Session
 from app.models.asset import Asset, AssetCategory
 from app.schemas.asset import AssetCreate, AssetUpdate, CategoryCreate, CategoryUpdate
 
-
 # ============================================================
 # 资产分类 CRUD
 # ============================================================

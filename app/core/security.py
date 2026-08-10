@@ -90,6 +90,11 @@ def get_current_user(
 def get_current_admin(
         current_user: User = Depends(get_current_user)  # noqa: B008
 ) -> User:
-    if not current_user.role != "admin":
-        raise BusinessException(code=401,messsage="非管理员用户，无权限")
+    """
+    管理员权限校验依赖
+    先通过get_current_user拿到当前用户，再校验角色是否为admin
+    非管理员直接抛403，路由函数不会执行
+    """
+    if current_user.role != "admin":
+        raise BusinessException(code=403, message="非管理员用户，无权限")
     return current_user

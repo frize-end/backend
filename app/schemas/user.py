@@ -4,25 +4,32 @@ from pydantic import BaseModel, Field
 
 
 class UserBase(BaseModel):
-    username :str = Field(..., description="用户名")
+    username: str = Field(..., description="用户名")
+
 
 class UserCreateDTO(UserBase):
-    password :str = Field(..., min_length=6, description="密码")
-    phone :str = Field(...,pattern=r'^1[3-9]\d{9}$', description="手机号(11位)")
+    password: str = Field(..., min_length=6, description="密码")
+    phone: str = Field(..., pattern=r'^1[3-9]\d{9}$', description="手机号(11位)")
+    role: str = Field("user", description="角色：user/admin")
+
 
 class UserUpdateDTO(BaseModel):
-    username :str | None = Field(None,description="用户名")
-    password :str | None = Field(None, min_length=6, description="密码，可选")
-    phone :str | None = Field(None,pattern=r'^1[3-9]\d{9}$', description="手机号,可选")
+    username: str | None = Field(None, description="用户名")
+    password: str | None = Field(None, min_length=6, description="密码，可选")
+    phone: str | None = Field(None, pattern=r'^1[3-9]\d{9}$', description="手机号,可选")
+    role: str | None = Field(None, description="角色：user/admin")
+
 
 class UserLoginDTO(BaseModel):
-    username :str = Field(..., description="用户名")
-    password :str = Field(..., min_length=6, description="密码")
+    username: str = Field(..., description="用户名")
+    password: str = Field(..., min_length=6, description="密码")
+
 
 class UserResponseDTO(UserBase):
-    id :int
-    create_time :datetime
-    phone :str
+    id: int
+    create_time: datetime
+    phone: str
+    role: str
 
     class Config:
         from_attributes = True

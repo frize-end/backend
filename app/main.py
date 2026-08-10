@@ -11,6 +11,7 @@ from fastapi.responses import JSONResponse
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
+from app.api.asset import router as asset_router
 from app.api.user import router as user_router
 from app.core.database import get_db
 from app.core.exceptions import BusinessException
@@ -102,8 +103,10 @@ def test_database(db : Session = Depends(get_db)):  # noqa: B008
         "test_result": result.scalar_one()
     })
 
-#挂载用户模块路由
+# 挂载用户模块路由
 app.include_router(user_router)
+# 挂载资产模块路由
+app.include_router(asset_router)
 
 log_dir = "logs"
 if not os.path.exists(log_dir):

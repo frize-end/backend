@@ -118,7 +118,7 @@ def _generate_asset_code(db: Session, category_id: int) -> str:
     if not category:
         raise BusinessException(code=404, message="分类不存在")
 
-    date_str = datetime.now().strftime("%Y%m%d")
+    date_str = datetime.now().strftime("%Y%m%d")  # noqa: DTZ005
     seq = crud_asset.get_max_asset_seq(db, category.code, date_str)
     return f"{category.code}-{date_str}-{seq + 1:03d}"
 
@@ -153,7 +153,7 @@ def list_assets(
     page: int = Query(1, ge=1, description="页码，从1开始"),
     page_size: int = Query(20, ge=1, le=100, description="每页条数，最大100"),
     category_id: int | None = Query(None, description="按分类筛选"),
-    status: AssetStatus | None = Query(None, description="按状态筛选"),
+    status: AssetStatus | None = Query(None, description="按状态筛选"),  # noqa: B008
     keyword: str | None = Query(None, description="按资产名称模糊搜索"),
     db: Session = Depends(get_db),  # noqa: B008
     user: User = Depends(get_current_user),  # noqa: B008

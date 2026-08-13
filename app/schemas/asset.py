@@ -71,23 +71,3 @@ class AssetUpdate(BaseModel):
     location: str | None = Field(None, max_length=128, description="存放位置")
     current_user_id: int | None = Field(None, description="当前使用人ID")
     remark: str | None = Field(None, description="备注")
-
-
-class AssetResponse(BaseModel):
-    """资产返回结构"""
-    id: int
-    asset_code: str
-    name: str
-    category_id: int
-    brand: str | None
-    model: str | None
-    status: str
-    purchase_date: date | None
-    purchase_price: Decimal | None
-    location: str | None
-    current_user_id: int | None
-    remark: str | None
-    create_time: datetime
-
-    class Config:
-        from_attributes = True

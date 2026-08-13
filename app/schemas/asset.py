@@ -57,17 +57,3 @@ class AssetCreate(BaseModel):
     location: str | None = Field(None, max_length=128, description="存放位置")
     current_user_id: int | None = Field(None, description="当前使用人ID")
     remark: str | None = Field(None, description="备注")
-
-
-class AssetUpdate(BaseModel):
-    """更新资产入参，所有字段可选"""
-    name: str | None = Field(None, max_length=128, description="资产名称")
-    category_id: int | None = Field(None, description="所属分类ID")
-    brand: str | None = Field(None, max_length=64, description="品牌")
-    model: str | None = Field(None, max_length=64, description="型号规格")
-    status: AssetStatus | None = Field(None, description="资产状态")
-    purchase_date: date | None = Field(None, description="购入日期")
-    purchase_price: Decimal | None = Field(None, ge=0, description="购入价格")
-    location: str | None = Field(None, max_length=128, description="存放位置")
-    current_user_id: int | None = Field(None, description="当前使用人ID")
-    remark: str | None = Field(None, description="备注")

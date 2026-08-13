@@ -11,15 +11,6 @@ from app.models.asset import Asset, AssetCategory
 # 资产分类 CRUD
 # ============================================================
 
-def create_category(db: Session, data: CategoryCreate) -> AssetCategory:
-    """创建分类"""
-    category = AssetCategory(**data.model_dump())
-    db.add(category)
-    db.commit()
-    db.refresh(category)
-    return category
-
-
 def get_category(db: Session, category_id: int) -> AssetCategory | None:
     """根据ID查询未删除的分类"""
     return db.query(AssetCategory).filter(
@@ -51,14 +42,6 @@ def count_assets_in_category(db: Session, category_id: int) -> int:
     ).count()
 
 
-def update_category(db: Session, category: AssetCategory, data: CategoryUpdate) -> AssetCategory:
-    """更新分类信息"""
-    for key, value in data.model_dump(exclude_unset=True).items():
-        setattr(category, key, value)
-    db.commit()
-    db.refresh(category)
-    return category
-
 
 def delete_category(db: Session, category: AssetCategory) -> None:
     """逻辑删除分类"""
@@ -69,14 +52,6 @@ def delete_category(db: Session, category: AssetCategory) -> None:
 # ============================================================
 # 资产 CRUD
 # ============================================================
-
-def create_asset(db: Session, data: AssetCreate, asset_code: str) -> Asset:
-    """创建资产，asset_code 由业务层生成后传入"""
-    asset = Asset(asset_code=asset_code, **data.model_dump())
-    db.add(asset)
-    db.commit()
-    db.refresh(asset)
-    return asset
 
 
 def get_asset(db: Session, asset_id: int) -> Asset | None:
@@ -116,15 +91,6 @@ def list_assets(
         .all()
     )
     return total, items
-
-
-def update_asset(db: Session, asset: Asset, data: AssetUpdate) -> Asset:
-    """更新资产信息"""
-    for key, value in data.model_dump(exclude_unset=True).items():
-        setattr(asset, key, value)
-    db.commit()
-    db.refresh(asset)
-    return asset
 
 
 def delete_asset(db: Session, asset: Asset) -> None:

@@ -11,7 +11,6 @@ from fastapi.responses import JSONResponse
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
-from app.api.asset import router as asset_router
 from app.api.user import router as user_router
 from app.core.database import get_db
 from app.core.exceptions import BusinessException

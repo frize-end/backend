@@ -104,8 +104,6 @@ def test_database(db : Session = Depends(get_db)):  # noqa: B008
 
 # 挂载用户模块路由
 app.include_router(user_router)
-# 挂载资产模块路由
-app.include_router(asset_router)
 
 log_dir = "logs"
 if not os.path.exists(log_dir):

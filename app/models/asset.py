@@ -1,6 +1,16 @@
-from datetime import date, datetime
+from datetime import date, datetime  # noqa: F401
 
-from sqlalchemy import Column, Date, DateTime, ForeignKey, Integer, Numeric, SmallInteger, String, Text
+from sqlalchemy import (
+    Column,
+    Date,
+    DateTime,
+    ForeignKey,
+    Integer,
+    Numeric,
+    SmallInteger,
+    String,
+    Text,
+)
 
 from app.core.database import Base
 

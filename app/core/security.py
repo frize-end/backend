@@ -19,11 +19,6 @@ pwd_context = CryptContext(
 )
 
 def hash_password(plain_password: str) -> str:
-    """
-    明文密码加密成密文
-    :param plain_password: 用户输入的明文密码
-    :return: 加密后的密文，存数据库
-    """
     return pwd_context.hash(plain_password)
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
@@ -44,7 +39,7 @@ def create_access_token(data:dict) -> str:
     to_encode = data.copy()
     expire = datetime.now(timezone.utc) + timedelta(minutes=settings.access_token_expire_minutes)
     to_encode.update({"exp": expire})  # exp是JWT标准的过期时间字段
-    
+
     # 生成令牌：用密钥和算法签名
     encoded_jwt = jwt.encode(
         claims=to_encode,
